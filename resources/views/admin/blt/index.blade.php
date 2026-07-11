@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Kelola Data BLT') }}
+            {{ __('Kelola Data Bantuan') }}
         </h2>
     </x-slot>
 
@@ -38,9 +38,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $b->periode }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {{ $b->status_penerimaan == 'Diterima' ? 'bg-green-100 text-green-800' : 
-                                        ($b->status_penerimaan == 'Tidak Layak' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800') }}">
-                                        {{ $b->status_penerimaan }}
+                                        {{ $b->status_penerima == 'Diterima' ? 'bg-green-100 text-green-800' : 
+                                        ($b->status_penerima == 'Tidak Layak' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800') }}">
+                                        {{ $b->status_penerima }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -54,7 +54,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data BLT.</td>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada data Bantuan.</td>
                             </tr>
                             @endforelse
                         </tbody>

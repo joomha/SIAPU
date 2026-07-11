@@ -46,5 +46,7 @@ class DatabaseSeeder extends Seeder
             ['nama_surat' => 'Surat Pengantar SKCK', 'deskripsi' => 'Surat pengantar untuk pengurusan SKCK di kepolisian'],
             ['nama_surat' => 'Surat Pernyataan Tanggung Jawab Mutlak', 'deskripsi' => 'Surat pernyataan tanggung jawab penuh atas kebenaran data'],
         ]);
+
+        $this->call(DummyDataSeeder::class);
     }
 }

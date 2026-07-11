@@ -95,7 +95,7 @@
 
     <div class="auth-hero">
         <h1>Sistem Administrasi <em>Modern</em> untuk Warga</h1>
-        <p>Pengelolaan data warga, penerbitan surat, dan transparansi BLT dalam satu platform terintegrasi.</p>
+        <p>Pengelolaan data warga, penerbitan surat, dan transparansi Bantuan dalam satu platform terintegrasi.</p>
 
         <div class="auth-stats">
             <div class="auth-stat">
@@ -124,5 +124,60 @@
     </div>
 </div>
 
+<!-- CUSTOM CURSOR -->
+<style>
+    body { cursor: none; }
+    .cursor-dot { width: 8px; height: 8px; background: #2563EB; border-radius: 50%; position: fixed; pointer-events: none; z-index: 999999; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s; }
+    .cursor-outline { width: 40px; height: 40px; border: 2px solid rgba(37,99,235,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 999998; transform: translate(-50%, -50%); transition: transform 0.15s ease-out, width 0.2s, height 0.2s, background 0.2s; }
+    body:hover .cursor-dot, body:hover .cursor-outline { opacity: 1; }
+    a:hover ~ .cursor-outline, button:hover ~ .cursor-outline, input:hover ~ .cursor-outline, select:hover ~ .cursor-outline, textarea:hover ~ .cursor-outline, .btn:hover ~ .cursor-outline { transform: translate(-50%, -50%) scale(1.5); background: rgba(37,99,235,0.1); border-color: transparent; }
+    a, button, input, select, textarea, .btn, .nav-link, .nav-brand { cursor: none !important; }
+    @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none !important; } body { cursor: auto; } a, button, input, select, textarea { cursor: pointer !important; } }
+</style>
+
+<div class="cursor-dot" id="cursorDotGlobal"></div>
+<div class="cursor-outline" id="cursorOutlineGlobal"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dot = document.getElementById('cursorDotGlobal');
+        const outline = document.getElementById('cursorOutlineGlobal');
+        
+        if (dot && outline) {
+            window.addEventListener('mousemove', function(e) {
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                setTimeout(() => {
+                    outline.style.left = e.clientX + 'px';
+                    outline.style.top = e.clientY + 'px';
+                }, 50);
+            });
+            
+            const attachEvents = () => {
+                document.querySelectorAll('a, button, input, select, textarea, .btn, .nav-link, .nav-brand').forEach(el => {
+                    if (!el.dataset.cursorAttached) {
+                        el.addEventListener('mouseenter', () => {
+                            outline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                            outline.style.background = 'rgba(37,99,235,0.1)';
+                            outline.style.borderColor = 'transparent';
+                        });
+                        el.addEventListener('mouseleave', () => {
+                            outline.style.transform = 'translate(-50%, -50%) scale(1)';
+                            outline.style.background = 'transparent';
+                            outline.style.borderColor = 'rgba(37,99,235,0.5)';
+                        });
+                        el.dataset.cursorAttached = 'true';
+                    }
+                });
+            };
+            
+            attachEvents();
+            // Optional: re-attach on DOM mutations if needed
+            const observer = new MutationObserver(attachEvents);
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    });
+</script>
+<!-- END CUSTOM CURSOR -->
 </body>
 </html>

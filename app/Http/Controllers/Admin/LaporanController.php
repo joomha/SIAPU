@@ -17,7 +17,7 @@ class LaporanController extends Controller
         $totalSuratDibuat = Surat::count();
         $pengajuanMenunggu = PengajuanSurat::where('status', 'Menunggu')->count();
         $suratMenungguValidasi = Surat::where('status', 'Menunggu Validasi')->count();
-        $totalPenerimaBlt = Blt::where('status_penerimaan', 'Diterima')->count();
+        $totalPenerimaBlt = Blt::where('status_penerima', 'Diterima')->count();
 
         // Optional: group by gender
         $wargaLaki = Warga::where('jenis_kelamin', 'Laki-Laki')->count();

@@ -12,11 +12,13 @@ use App\Http\Controllers\Admin\BltController;
 use App\Http\Controllers\Admin\LaporanController;
 
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\ChatbotController;
 
 Route::get('/', [PublicController::class, 'index'])->name('home');
 Route::get('/layanan-mandiri', [PublicController::class, 'layananMandiri'])->name('public.layanan_mandiri');
 Route::post('/layanan-mandiri/store', [PublicController::class, 'storePengajuan'])->name('public.store_pengajuan');
 Route::get('/cek-status', [PublicController::class, 'cekStatus'])->name('public.cek_status');
+Route::post('/api/chat', [ChatbotController::class, 'respond']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');

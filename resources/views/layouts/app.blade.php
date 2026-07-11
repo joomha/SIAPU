@@ -212,7 +212,7 @@
         <div class="sidebar-section-label">Data & Laporan</div>
         <a href="{{ route('admin.blt.index') }}" class="nav-item {{ request()->routeIs('admin.blt.*') ? 'active' : '' }}">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Data BLT
+            Data Bantuan
         </a>
         <a href="{{ route('admin.arsip.index') }}" class="nav-item {{ request()->routeIs('admin.arsip.*') ? 'active' : '' }}">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
@@ -265,5 +265,60 @@
     </main>
 </div>
 
+<!-- CUSTOM CURSOR -->
+<style>
+    body { cursor: none; }
+    .cursor-dot { width: 8px; height: 8px; background: #2563EB; border-radius: 50%; position: fixed; pointer-events: none; z-index: 999999; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s; }
+    .cursor-outline { width: 40px; height: 40px; border: 2px solid rgba(37,99,235,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 999998; transform: translate(-50%, -50%); transition: transform 0.15s ease-out, width 0.2s, height 0.2s, background 0.2s; }
+    body:hover .cursor-dot, body:hover .cursor-outline { opacity: 1; }
+    a:hover ~ .cursor-outline, button:hover ~ .cursor-outline, input:hover ~ .cursor-outline, select:hover ~ .cursor-outline, textarea:hover ~ .cursor-outline, .btn:hover ~ .cursor-outline { transform: translate(-50%, -50%) scale(1.5); background: rgba(37,99,235,0.1); border-color: transparent; }
+    a, button, input, select, textarea, .btn, .nav-link, .nav-brand { cursor: none !important; }
+    @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none !important; } body { cursor: auto; } a, button, input, select, textarea { cursor: pointer !important; } }
+</style>
+
+<div class="cursor-dot" id="cursorDotGlobal"></div>
+<div class="cursor-outline" id="cursorOutlineGlobal"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dot = document.getElementById('cursorDotGlobal');
+        const outline = document.getElementById('cursorOutlineGlobal');
+        
+        if (dot && outline) {
+            window.addEventListener('mousemove', function(e) {
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                setTimeout(() => {
+                    outline.style.left = e.clientX + 'px';
+                    outline.style.top = e.clientY + 'px';
+                }, 50);
+            });
+            
+            const attachEvents = () => {
+                document.querySelectorAll('a, button, input, select, textarea, .btn, .nav-link, .nav-brand').forEach(el => {
+                    if (!el.dataset.cursorAttached) {
+                        el.addEventListener('mouseenter', () => {
+                            outline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                            outline.style.background = 'rgba(37,99,235,0.1)';
+                            outline.style.borderColor = 'transparent';
+                        });
+                        el.addEventListener('mouseleave', () => {
+                            outline.style.transform = 'translate(-50%, -50%) scale(1)';
+                            outline.style.background = 'transparent';
+                            outline.style.borderColor = 'rgba(37,99,235,0.5)';
+                        });
+                        el.dataset.cursorAttached = 'true';
+                    }
+                });
+            };
+            
+            attachEvents();
+            // Optional: re-attach on DOM mutations if needed
+            const observer = new MutationObserver(attachEvents);
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    });
+</script>
+<!-- END CUSTOM CURSOR -->
 </body>
 </html>

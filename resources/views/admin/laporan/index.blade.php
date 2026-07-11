@@ -49,7 +49,7 @@
             </div>
             <div>
                 <div class="stat-value">{{ $totalPenerimaBlt }}</div>
-                <div class="stat-label">Penerima BLT</div>
+                <div class="stat-label">Penerima Bantuan</div>
             </div>
         </div>
     </div>

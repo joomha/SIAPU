@@ -2,15 +2,17 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SIAPU — Desa Kadubeureum</title>
     <meta name="description" content="Sistem Informasi Administrasi Pelayanan Umum Desa Kadubeureum, Kecamatan Pabuaran, Kabupaten Serang.">
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700,800,900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=outfit:400,500,600,700,800,900|inter:400,500,600,700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FAFAFA; color: #1A1A2E; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: #FAFAFA; color: #1A1A2E; overflow-x: hidden; }
+        h1, h2, h3, h4, h5, h6, .nav-brand, .hero-stat strong, .stat-number, .service-title, .section-title { font-family: 'Outfit', sans-serif; }
         img { max-width: 100%; height: auto; display: block; }
 
         /* ── ANIMATIONS ────────────────────────────── */
@@ -51,7 +53,7 @@
 
         /* ── HERO ────────────────────────────────── */
         .hero { min-height: 100vh; background: #0B1F3A; display: flex; align-items: center; padding: 120px 40px 80px; position: relative; overflow: hidden; }
-        .hero-bg-image { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1590005354167-6da97ce231ce?w=1920&q=80') center/cover no-repeat; opacity: 0.1; pointer-events: none; }
+        .hero-bg-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; pointer-events: none; z-index: 0; filter: contrast(1.1) brightness(0.9); }
         .hero-glow-1 { position: absolute; top: -100px; right: 5%; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 65%); pointer-events: none; animation: float 8s ease-in-out infinite; }
         .hero-glow-2 { position: absolute; bottom: -80px; left: 10%; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 65%); pointer-events: none; animation: float 6s ease-in-out infinite reverse; }
         .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; max-width: 1200px; margin: 0 auto; align-items: center; position: relative; z-index: 1; }
@@ -67,10 +69,11 @@
         .btn-hero-primary:hover { background: #1D4ED8; box-shadow: 0 0 0 5px rgba(37,99,235,0.25); transform: translateY(-3px); }
         .btn-hero-ghost { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); padding: 13px 26px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); font-weight: 600; font-size: 15px; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
         .btn-hero-ghost:hover { background: rgba(255,255,255,0.14); color: #fff; transform: translateY(-3px); border-color: rgba(255,255,255,0.3); }
-        .hero-panel { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 28px; backdrop-filter: blur(10px); animation: scaleIn 0.8s ease 0.4s forwards; opacity: 0; }
+        .hero-panel { position: relative; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px; backdrop-filter: blur(16px); box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); animation: scaleIn 0.8s ease 0.4s forwards; opacity: 0; perspective: 1200px; transform-style: preserve-3d; }
+        .hero-panel::before { content: ''; position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800&q=80') center/cover no-repeat; opacity: 0.75; border-radius: inherit; z-index: -1; pointer-events: none; filter: brightness(0.5) blur(1px); }
         .hero-panel-title { color: rgba(255,255,255,0.4); font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px; }
-        .panel-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.06); transition: all 0.3s; cursor: default; }
-        .panel-item:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); transform: translateX(6px); }
+        .panel-item { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 14px; background: rgba(255,255,255,0.05); margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: default; position: relative; }
+        .panel-item:hover { background: rgba(255,255,255,0.1); border-color: rgba(96,165,250,0.5); transform: perspective(800px) translateY(-10px) translateZ(30px) rotateX(5deg) rotateY(-5deg) scale(1.05); box-shadow: -15px 20px 40px rgba(0,0,0,0.4), inset 1px 1px 2px rgba(255,255,255,0.3); z-index: 10; }
         .panel-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.3s; }
         .panel-item:hover .panel-icon { transform: scale(1.1) rotate(-5deg); }
         .panel-icon svg { width: 18px; height: 18px; }
@@ -79,8 +82,8 @@
         .panel-check { margin-left: auto; }
         .panel-check svg { width: 18px; height: 18px; color: #34D399; }
         .hero-stat-row { display: flex; gap: 10px; margin-top: 16px; }
-        .hero-stat { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px; transition: all 0.3s; cursor: default; }
-        .hero-stat:hover { background: rgba(255,255,255,0.08); transform: translateY(-3px); }
+        .hero-stat { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: default; transform-style: preserve-3d; }
+        .hero-stat:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); transform: translateY(-5px) translateZ(20px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.3); z-index: 10; position: relative; }
         .hero-stat strong { display: block; color: #fff; font-size: 20px; font-weight: 800; }
         .hero-stat span { color: rgba(255,255,255,0.35); font-size: 11px; }
 
@@ -112,8 +115,8 @@
         .about-content .section-label, .about-content .section-title { text-align: left; }
         .about-content p { color: #64748B; font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
         .about-features { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-        .about-feat { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; background: #F8FAFC; border: 1px solid #E2E8F0; transition: all 0.3s; }
-        .about-feat:hover { transform: translateX(8px); border-color: #BFDBFE; background: #EFF6FF; }
+        .about-feat { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; background: #F8FAFC; border: 1px solid #E2E8F0; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+        .about-feat:hover { transform: perspective(800px) translateY(-5px) translateZ(20px) rotateX(4deg) rotateY(-2deg); border-color: #93C5FD; background: #EFF6FF; box-shadow: -10px 15px 30px rgba(37,99,235,0.15); z-index: 10; position: relative; }
         .about-feat-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .about-feat-icon svg { width: 18px; height: 18px; }
         .about-feat span { font-size: 14px; font-weight: 600; color: #0F172A; }
@@ -129,10 +132,10 @@
         /* ── SERVICES ─────────────────────────────── */
         .services { padding: 100px 40px; background: #F8FAFC; }
         .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .service-card { border: 1.5px solid #E2E8F0; border-radius: 18px; padding: 30px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); background: #fff; position: relative; overflow: hidden; }
+        .service-card { border: 1.5px solid #E2E8F0; border-radius: 18px; padding: 30px; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); background: #fff; position: relative; overflow: visible; transform-style: preserve-3d; }
         .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #2563EB, #7C3AED); transform: scaleX(0); transition: transform 0.4s; transform-origin: left; }
         .service-card:hover::before { transform: scaleX(1); }
-        .service-card:hover { border-color: #BFDBFE; box-shadow: 0 16px 48px rgba(37,99,235,0.1); transform: translateY(-8px); }
+        .service-card:hover { border-color: #93C5FD; box-shadow: -15px 25px 50px rgba(37,99,235,0.15); transform: perspective(1000px) translateY(-10px) translateZ(30px) rotateX(4deg) rotateY(-3deg) scale(1.02); z-index: 10; }
         .service-num { font-size: 11px; font-weight: 700; color: #CBD5E1; letter-spacing: 1px; margin-bottom: 16px; }
         .service-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; transition: transform 0.4s; }
         .service-card:hover .service-icon { transform: scale(1.15) rotate(-5deg); }
@@ -145,8 +148,8 @@
         /* ── HOW ─────────────────────────────── */
         .how { padding: 100px 40px; background: #fff; }
         .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
-        .step { text-align: center; padding: 28px 20px; transition: all 0.3s; }
-        .step:hover { transform: translateY(-6px); }
+        .step { text-align: center; padding: 28px 20px; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+        .step:hover { transform: perspective(800px) translateY(-8px) translateZ(25px) rotateX(5deg) scale(1.05); }
         .step-num { width: 56px; height: 56px; border-radius: 50%; background: #0B1F3A; color: #fff; font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; transition: all 0.3s; }
         .step:hover .step-num { background: #2563EB; transform: scale(1.1); box-shadow: 0 8px 24px rgba(37,99,235,0.3); }
         .step h4 { font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 8px; }
@@ -155,8 +158,8 @@
         /* ── PERSYARATAN SURAT ──────────────────── */
         .persyaratan { padding: 100px 40px; background: #F8FAFC; }
         .persyaratan-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-        .persyaratan-card { background: #fff; border: 1.5px solid #E2E8F0; border-radius: 16px; overflow: hidden; transition: all 0.4s; }
-        .persyaratan-card:hover { border-color: #BFDBFE; box-shadow: 0 12px 40px rgba(37,99,235,0.08); transform: translateY(-4px); }
+        .persyaratan-card { background: #fff; border: 1.5px solid #E2E8F0; border-radius: 16px; overflow: hidden; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+        .persyaratan-card:hover { border-color: #93C5FD; box-shadow: -10px 20px 40px rgba(37,99,235,0.12); transform: perspective(1000px) translateY(-6px) translateZ(20px) rotateX(3deg); z-index: 5; position: relative; }
         .persyaratan-header { padding: 20px 24px; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.2s; }
         .persyaratan-header:hover { background: #EFF6FF; }
         .persyaratan-icon { width: 40px; height: 40px; border-radius: 10px; background: #EFF6FF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -172,8 +175,8 @@
         /* ── ARTICLES ─────────────────────────────── */
         .articles { padding: 100px 40px; background: #fff; }
         .articles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto; }
-        .article-card { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid #E2E8F0; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .article-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.08); border-color: #BFDBFE; }
+        .article-card { background: #fff; border-radius: 18px; overflow: hidden; border: 1px solid #E2E8F0; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+        .article-card:hover { transform: perspective(1000px) translateY(-10px) translateZ(25px) rotateX(3deg) rotateY(-2deg) scale(1.02); box-shadow: -15px 25px 50px rgba(0,0,0,0.12); border-color: #93C5FD; z-index: 10; position: relative; }
         .article-img { width: 100%; height: 200px; object-fit: cover; transition: transform 0.6s ease; }
         .article-card:hover .article-img { transform: scale(1.06); }
         .article-img-wrap { overflow: hidden; position: relative; }
@@ -197,8 +200,8 @@
         .emergency-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.4); padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; color: #FCA5A5; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; }
         .emergency-badge::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #EF4444; animation: pulse-glow 1.5s ease infinite; }
         .emergency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-        .emergency-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; text-align: center; transition: all 0.3s; cursor: default; }
-        .emergency-card:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: translateY(-6px); }
+        .emergency-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; text-align: center; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: default; transform-style: preserve-3d; }
+        .emergency-card:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); transform: perspective(800px) translateY(-8px) translateZ(25px) rotateX(5deg) scale(1.04); box-shadow: -10px 15px 30px rgba(0,0,0,0.2); z-index: 10; position: relative; }
         .emergency-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; transition: transform 0.3s; }
         .emergency-card:hover .emergency-icon { transform: scale(1.15) rotate(-8deg); }
         .emergency-icon svg { width: 24px; height: 24px; }
@@ -274,6 +277,100 @@
             .persyaratan-grid { grid-template-columns: 1fr; }
             .hero, .services, .how, .about, .articles, .emergency, .gallery, .cta-banner, .persyaratan { padding-left: 20px; padding-right: 20px; }
         }
+            /* ── PROFIL DESA ─────────────────────────────── */
+        .visi-misi { padding: 80px 40px; background: #fff; }
+        .visi-card { text-align: center; max-width: 800px; margin: 0 auto 50px; padding: 40px; background: #0B1F3A; border-radius: 20px; box-shadow: 0 20px 40px rgba(11,31,58,0.15); position: relative; overflow: hidden; }
+        .visi-card::before { content: ''; position: absolute; inset: 0; background: url('{{ asset('images/desa_sawah.png') }}') center/cover; opacity: 0.05; }
+        .visi-card h3 { color: #60A5FA; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; position: relative; }
+        .visi-card h4 { font-size: 32px; font-weight: 900; color: #fff; line-height: 1.4; position: relative; }
+        .misi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .misi-item { display: flex; gap: 16px; background: #F8FAFC; padding: 24px; border-radius: 16px; border: 1px solid #E2E8F0; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+        .misi-item:hover { transform: perspective(800px) translateY(-8px) translateZ(25px) rotateX(4deg) rotateY(-2deg) scale(1.02); border-color: #60A5FA; box-shadow: -12px 20px 40px rgba(37,99,235,0.15); background: #fff; z-index: 10; position: relative; }
+        .misi-num { width: 42px; height: 42px; border-radius: 12px; background: #2563EB; color: #fff; font-size: 18px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 8px 16px rgba(37,99,235,0.2); }
+        .misi-text { font-size: 14.5px; color: #475569; line-height: 1.6; padding-top: 10px; font-weight: 600; }
+
+        .sejarah { padding: 80px 40px; background: #F8FAFC; }
+        .timeline { position: relative; max-width: 900px; margin: 0 auto; padding: 20px 0; }
+        .timeline::before { content: ''; position: absolute; top: 0; bottom: 0; left: 120px; width: 2px; background: #CBD5E1; }
+        .tl-item { position: relative; padding-left: 170px; margin-bottom: 40px; }
+        .tl-year { position: absolute; left: 0; top: 0; width: 100px; text-align: right; font-weight: 900; color: #2563EB; font-size: 22px; }
+        .tl-dot { position: absolute; left: 113px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: #2563EB; border: 4px solid #F8FAFC; box-shadow: 0 0 0 3px rgba(37,99,235,0.2); transition: all 0.3s; }
+        .tl-item:hover .tl-dot { transform: scale(1.3); background: #1D4ED8; }
+        .tl-content { background: #fff; border: 1px solid #E2E8F0; border-radius: 16px; padding: 24px; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+        .tl-item:hover .tl-content { transform: perspective(800px) translateX(15px) translateZ(20px) rotateY(-4deg); border-color: #93C5FD; box-shadow: -15px 20px 40px rgba(0,0,0,0.1); }
+        .tl-content h4 { font-size: 17px; font-weight: 800; color: #0F172A; margin-bottom: 8px; }
+        .tl-content p { font-size: 14px; color: #64748B; line-height: 1.6; }
+
+        .demografi { padding: 80px 40px; background: #fff; }
+        .chart-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .chart-box { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 20px; padding: 32px; transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); transform-style: preserve-3d; }
+        .chart-box:hover { box-shadow: -15px 25px 50px rgba(0,0,0,0.08); transform: perspective(1200px) translateY(-8px) translateZ(20px) rotateX(2deg) rotateY(-1deg); z-index: 10; position: relative; }
+        .chart-title { font-size: 18px; font-weight: 800; color: #0B1F3A; margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+        .chart-title svg { width: 20px; height: 20px; color: #2563EB; }
+        .bar-row { margin-bottom: 18px; }
+        .bar-label { display: flex; justify-content: space-between; font-size: 13.5px; font-weight: 700; color: #334155; margin-bottom: 8px; }
+        .bar-track { width: 100%; height: 14px; background: #E2E8F0; border-radius: 8px; overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, #3B82F6, #2563EB); border-radius: 8px; width: 0; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .visible .bar-fill { width: var(--w); }
+        .bar-fill.green { background: linear-gradient(90deg, #10B981, #059669); }
+        .bar-fill.purple { background: linear-gradient(90deg, #A855F7, #7E22CE); }
+        .bar-fill.orange { background: linear-gradient(90deg, #F59E0B, #D97706); }
+        
+        .struktur { padding: 80px 40px; background: #F8FAFC; overflow-x: auto; }
+        .org-tree { display: flex; flex-direction: column; align-items: center; min-width: 800px; padding: 20px 0; }
+        .org-node { background: #0B1F3A; color: #fff; padding: 18px 30px; border-radius: 14px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(11,31,58,0.2); border-bottom: 4px solid #3B82F6; z-index: 2; margin-bottom: 40px; transition: transform 0.3s; }
+        .org-node:hover { transform: perspective(800px) translateY(-8px) translateZ(30px) rotateX(6deg) scale(1.05); box-shadow: 0 15px 35px rgba(11,31,58,0.3); z-index: 10; }
+        .org-node.sub { background: #fff; color: #0F172A; border: 1px solid #E2E8F0; border-bottom: 4px solid #10B981; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .org-node.sub3 { border-bottom: 4px solid #F59E0B; }
+        .org-title { font-size: 11px; font-weight: 800; color: #93C5FD; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+        .org-node.sub .org-title { color: #64748B; }
+        .org-name { font-size: 17px; font-weight: 900; letter-spacing: -0.3px; }
+        .org-children { display: flex; justify-content: center; position: relative; padding-top: 40px; width: 100%; gap: 20px; }
+        .org-children::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 40px; background: #CBD5E1; }
+        .org-children.has-line::after { content: ''; position: absolute; top: 40px; left: 15%; right: 15%; height: 2px; background: #CBD5E1; }
+        .org-child { position: relative; padding-top: 40px; flex: 1; display: flex; flex-direction: column; align-items: center; min-width: 180px; }
+        .org-child::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 40px; background: #CBD5E1; }
+        
+        @media (max-width: 768px) {
+            .chart-container { grid-template-columns: 1fr; }
+            .timeline::before { left: 24px; }
+            .tl-item { padding-left: 60px; }
+            .tl-year { position: relative; text-align: left; margin-bottom: 12px; width: auto; font-size: 18px; }
+            .tl-dot { left: 16px; top: 40px; }
+            .org-tree { transform: scale(0.8); transform-origin: top center; }
+        }
+    
+        /* ── CHATBOT UI ─────────────────────────────── */
+        .float-chat { position: fixed; bottom: 85px; right: 30px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; z-index: 999; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.25)); }
+        .float-chat:hover { transform: translateY(-8px) scale(1.1); filter: drop-shadow(0 15px 30px rgba(0,0,0,0.35)); }
+        .float-chat img { width: 100%; height: 100%; object-fit: contain; transform: scale(3.5); }
+        
+        .chat-window { position: fixed; bottom: 140px; right: 30px; width: 360px; height: 500px; max-height: calc(100vh - 140px); background: #fff; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; z-index: 999; opacity: 0; transform: translateY(20px) scale(0.95); pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1); transform-origin: bottom right; }
+        .chat-window.active { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        .chat-header { background: #0B1F3A; padding: 20px; display: flex; align-items: center; justify-content: space-between; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .chat-header-info { display: flex; align-items: center; gap: 12px; }
+        .chat-avatar { width: 36px; height: 36px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .chat-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .chat-status { font-size: 11px; color: #93C5FD; display: flex; align-items: center; gap: 5px; }
+        .chat-status::before { content: ''; width: 6px; height: 6px; background: #34D399; border-radius: 50%; display: inline-block; animation: pulse-glow 2s infinite; }
+        .chat-close { background: none; border: none; color: #94A3B8; cursor: pointer; transition: color 0.2s; padding: 4px; }
+        .chat-close:hover { color: #fff; }
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: #F8FAFC; scroll-behavior: smooth; }
+        .chat-msg { max-width: 85%; font-size: 13.5px; line-height: 1.6; }
+        .chat-msg.bot { align-self: flex-start; background: #fff; border: 1px solid #E2E8F0; padding: 12px 16px; border-radius: 16px 16px 16px 4px; color: #1E293B; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .chat-msg.bot b { color: #2563EB; }
+        .chat-msg.user { align-self: flex-end; background: #2563EB; color: #fff; padding: 12px 16px; border-radius: 16px 16px 4px 16px; box-shadow: 0 4px 12px rgba(37,99,235,0.15); }
+        .chat-footer { padding: 16px; background: #fff; border-top: 1px solid #E2E8F0; display: flex; gap: 10px; align-items: center; }
+        .chat-input { flex: 1; border: 1px solid #E2E8F0; border-radius: 24px; padding: 12px 16px; font-size: 14px; outline: none; transition: all 0.2s; background: #F8FAFC; }
+        .chat-input:focus { border-color: #2563EB; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .chat-send { width: 42px; height: 42px; background: #2563EB; border: none; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+        .chat-send:hover { background: #1D4ED8; transform: scale(1.05); }
+        .chat-send:disabled { background: #94A3B8; cursor: not-allowed; transform: none; }
+        .typing-indicator { display: none; align-self: flex-start; background: #fff; border: 1px solid #E2E8F0; padding: 12px 16px; border-radius: 16px 16px 16px 4px; gap: 4px; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .typing-indicator.active { display: flex; }
+        .typing-dot { width: 6px; height: 6px; background: #94A3B8; border-radius: 50%; animation: typing 1.4s infinite ease-in-out; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
     </style>
 </head>
 <body>
@@ -293,7 +390,7 @@
 
 <!-- ══════════ HERO ══════════ -->
 <section class="hero">
-    <div class="hero-bg-image"></div>
+    <video autoplay loop muted playsinline class="hero-bg-video"><source src="{{ asset('latar_belakang_hero.mp4') }}" type="video/mp4"></video>
     <div class="hero-glow-1"></div>
     <div class="hero-glow-2"></div>
     <div class="hero-grid">
@@ -354,9 +451,9 @@
 <section class="about" id="tentang">
     <div class="about-grid">
         <div class="about-images reveal-left">
-            <div class="about-img"><img src="https://images.unsplash.com/photo-1590005354167-6da97ce231ce?w=600&h=800&fit=crop&q=80" alt="Sawah dan Perbukitan" loading="lazy"></div>
-            <div class="about-img"><img src="https://images.unsplash.com/photo-1534103138865-c70a6c04f91c?w=600&h=400&fit=crop&q=80" alt="Jalan Pedesaan" loading="lazy"></div>
-            <div class="about-img"><img src="https://images.unsplash.com/photo-1505934333218-8feeaebecdc5?w=600&h=400&fit=crop&q=80" alt="Lahan Pertanian" loading="lazy"></div>
+            <div class="about-img"><img src="{{ asset('images/desa_sawah.png') }}" alt="Sawah dan Perbukitan" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"></div>
+            <div class="about-img"><img src="{{ asset('images/desa_jalan.png') }}" alt="Jalan Pedesaan" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"></div>
+            <div class="about-img"><img src="{{ asset('images/desa_kantor.png') }}" alt="Kantor Desa" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"></div>
             <div class="about-badge"><strong>2004</strong>Tahun Berdiri</div>
         </div>
         <div class="about-content reveal-right">
@@ -370,6 +467,149 @@
                 <div class="about-feat reveal delay-3"><div class="about-feat-icon" style="background:#FFFBEB;"><svg fill="none" stroke="#D97706" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><span>Mayoritas mata pencaharian pertanian & perdagangan</span></div>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- ══════════ VISI MISI ══════════ -->
+<section class="visi-misi" id="visi-misi">
+    <div class="visi-card reveal-scale">
+        <h3>Visi Desa</h3>
+        <h4>"DESA KADUBEUREUM MAJU DAN SEJAHTERA"</h4>
+    </div>
+    <div class="section-header reveal"><div class="section-label">Misi Desa</div><h2 class="section-title">Langkah Nyata Mewujudkan Visi</h2></div>
+    <div class="misi-grid">
+        <div class="misi-item reveal delay-1"><div class="misi-num">1</div><div class="misi-text">Meningkatkan Pembangunan Infrastruktur yang mendukung Perekonomian Desa.</div></div>
+        <div class="misi-item reveal delay-2"><div class="misi-num">2</div><div class="misi-text">Meningkatkan Pembangunan di Bidang Kesehatan.</div></div>
+        <div class="misi-item reveal delay-3"><div class="misi-num">3</div><div class="misi-text">Meningkatkan Pembangunan di Bidang Pendidikan.</div></div>
+        <div class="misi-item reveal delay-4"><div class="misi-num">4</div><div class="misi-text">Meningkatkan Perekonomian Masyarakat Desa Kadubeureum.</div></div>
+        <div class="misi-item reveal delay-5"><div class="misi-num">5</div><div class="misi-text">Meningkatkan Kinerja Aparatur Pemerintah Desa Kadubeureum.</div></div>
+    </div>
+</section>
+
+<!-- ══════════ SEJARAH ══════════ -->
+<section class="sejarah" id="sejarah">
+    <div class="section-header reveal"><div class="section-label">Jejak Langkah</div><h2 class="section-title">Sejarah Kepemimpinan Desa</h2><p class="section-desc">Menelusuri sejarah kepemimpinan Desa Kadubeureum dari masa ke masa yang telah membawa perubahan positif bagi masyarakat.</p></div>
+    <div class="timeline">
+        <div class="tl-item reveal-right delay-1"><div class="tl-year">1932</div><div class="tl-dot"></div><div class="tl-content"><h4>Ki Awab</h4><p>Kepala Desa Pertama (Pemimpin pada era awal pembentukan desa)</p></div></div>
+        <div class="tl-item reveal-right delay-2"><div class="tl-year">1935</div><div class="tl-dot"></div><div class="tl-content"><h4>Ki Saliman</h4><p>Kepala Desa Kedua (Menjabat dari tahun 1935 hingga 1947)</p></div></div>
+        <div class="tl-item reveal-right delay-3"><div class="tl-year">1947</div><div class="tl-dot"></div><div class="tl-content"><h4>Ki Sayim</h4><p>Kepala Desa Ketiga (Memimpin desa di masa pasca-kemerdekaan hingga 1952)</p></div></div>
+        <div class="tl-item reveal-right delay-4"><div class="tl-year">1952</div><div class="tl-dot"></div><div class="tl-content"><h4>Ki Marhalim</h4><p>Kepala Desa Keempat (Menjabat dari tahun 1952 hingga 1960)</p></div></div>
+        <div class="tl-item reveal-right delay-5"><div class="tl-year">1960</div><div class="tl-dot"></div><div class="tl-content"><h4>H. Jahari</h4><p>Kepala Desa Kelima (Membawa perkembangan desa dari 1960 hingga 1982)</p></div></div>
+        <div class="tl-item reveal-right delay-1"><div class="tl-year">1982</div><div class="tl-dot"></div><div class="tl-content"><h4>Moh. Hapi</h4><p>Kepala Desa Keenam (Menjabat dari tahun 1982 hingga 1992)</p></div></div>
+        <div class="tl-item reveal-right delay-2"><div class="tl-year">1992</div><div class="tl-dot"></div><div class="tl-content"><h4>Subadri</h4><p>Kepala Desa Ketujuh (Menjabat dari tahun 1992 hingga 2000)</p></div></div>
+        <div class="tl-item reveal-right delay-3"><div class="tl-year">2000</div><div class="tl-dot"></div><div class="tl-content"><h4>Suni / PJS. H. Mahrus</h4><p>Kepala Desa Kedelapan (Suni menjabat hingga 2008, dilanjutkan PJS H. Mahrus hingga 2011)</p></div></div>
+        <div class="tl-item reveal-right delay-4"><div class="tl-year">2011</div><div class="tl-dot"></div><div class="tl-content"><h4>Fahrudin</h4><p>Kepala Desa Kesembilan (Menjabat dari tahun 2011 hingga 2017)</p></div></div>
+        <div class="tl-item reveal-right delay-5"><div class="tl-year">2017 - Skrg</div><div class="tl-dot"></div><div class="tl-content"><h4>Mukhlas</h4><p>Kepala Desa Kesepuluh (Memimpin dengan visi "Desa Kadubeureum Maju dan Sejahtera" hingga saat ini)</p></div></div>
+    </div>
+</section>
+
+<!-- ══════════ DEMOGRAFI ══════════ -->
+<section class="demografi" id="demografi">
+    <div class="section-header reveal"><div class="section-label">Data Penduduk</div><h2 class="section-title">Demografi Kadubeureum</h2><p class="section-desc">Gambaran statistik kependudukan Desa Kadubeureum berdasarkan data terbaru.</p></div>
+    <div class="chart-container">
+        
+        <div class="chart-box reveal delay-1">
+            <div class="chart-title"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg> Populasi Berdasarkan Jenis Kelamin</div>
+            <div class="bar-row reveal">
+                <div class="bar-label"><span>Laki-Laki (3.263 Jiwa)</span><span>51.1%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="--w: 51.1%;"></div></div>
+            </div>
+            <div class="bar-row reveal delay-2">
+                <div class="bar-label"><span>Perempuan (3.119 Jiwa)</span><span>48.9%</span></div>
+                <div class="bar-track"><div class="bar-fill purple" style="--w: 48.9%;"></div></div>
+            </div>
+        </div>
+        
+        <div class="chart-box reveal delay-2">
+            <div class="chart-title"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg> Tingkat Pendidikan</div>
+            <div class="bar-row reveal">
+                <div class="bar-label"><span>Belum / Tidak Sekolah (1.615)</span><span>25.3%</span></div>
+                <div class="bar-track"><div class="bar-fill orange" style="--w: 25.3%;"></div></div>
+            </div>
+            <div class="bar-row reveal delay-1">
+                <div class="bar-label"><span>Tamat SD / Sederajat (2.593)</span><span>40.6%</span></div>
+                <div class="bar-track"><div class="bar-fill green" style="--w: 40.6%;"></div></div>
+            </div>
+            <div class="bar-row reveal delay-2">
+                <div class="bar-label"><span>SLTP / Sederajat (1.111)</span><span>17.4%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="--w: 17.4%;"></div></div>
+            </div>
+            <div class="bar-row reveal delay-3">
+                <div class="bar-label"><span>SLTA / Sederajat (896)</span><span>14.0%</span></div>
+                <div class="bar-track"><div class="bar-fill purple" style="--w: 14.0%;"></div></div>
+            </div>
+            <div class="bar-row reveal delay-4">
+                <div class="bar-label"><span>Perguruan Tinggi (167)</span><span>2.7%</span></div>
+                <div class="bar-track"><div class="bar-fill orange" style="--w: 2.7%;"></div></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══════════ STRUKTUR ORGANISASI ══════════ -->
+<section class="struktur" id="struktur">
+    <div class="section-header reveal"><div class="section-label">Pemerintahan</div><h2 class="section-title">Struktur Organisasi</h2><p class="section-desc">Susunan kepengurusan Pemerintah Desa Kadubeureum untuk melayani masyarakat.</p></div>
+    
+    <div class="org-tree reveal-scale">
+        <div class="org-node">
+            <div class="org-title">Kepala Desa</div>
+            <div class="org-name">MUKHLAS</div>
+        </div>
+        
+        <div class="org-children has-line">
+            
+            <div class="org-child">
+                <div class="org-node sub reveal delay-1">
+                    <div class="org-title">Sekretaris Desa</div>
+                    <div class="org-name">FURIYATUL FAJRIAH</div>
+                </div>
+                
+                <div class="org-children has-line" style="gap: 10px;">
+                    <div class="org-child">
+                        <div class="org-node sub sub3 reveal delay-2">
+                            <div class="org-title">Kaur Tata Usaha & Umum</div>
+                            <div class="org-name" style="font-size:14px;">NUR ROHMAH</div>
+                        </div>
+                    </div>
+                    <div class="org-child">
+                        <div class="org-node sub sub3 reveal delay-3">
+                            <div class="org-title">Kaur Keuangan</div>
+                            <div class="org-name" style="font-size:14px;">SUDRAJAT</div>
+                        </div>
+                    </div>
+                    <div class="org-child">
+                        <div class="org-node sub sub3 reveal delay-4">
+                            <div class="org-title">Kaur Perencanaan</div>
+                            <div class="org-name" style="font-size:14px;">ANISAH KHOIRUNISAH</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="org-children has-line" style="margin-top: -30px;">
+            <div class="org-child">
+                <div class="org-node sub reveal delay-3">
+                    <div class="org-title">Kasi Pemerintahan</div>
+                    <div class="org-name">EDI KUNAEDI</div>
+                </div>
+            </div>
+            <div class="org-child">
+                <div class="org-node sub reveal delay-4">
+                    <div class="org-title">Kasi Kesejahteraan</div>
+                    <div class="org-name">RUMANUDIN</div>
+                </div>
+            </div>
+            <div class="org-child">
+                <div class="org-node sub reveal delay-5">
+                    <div class="org-title">Kasi Pelayanan</div>
+                    <div class="org-name">ISNAIN ALFIYYAN Z</div>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </section>
 
@@ -481,11 +721,11 @@
 <section class="gallery" id="galeri">
     <div class="section-header reveal"><div class="section-label">Galeri Desa</div><h2 class="section-title">Potret Kehidupan Kadubeureum</h2><p class="section-desc">Momen-momen kegiatan warga dan keindahan alam di sekitar desa kami.</p></div>
     <div class="gallery-grid">
-        <div class="gallery-item reveal-scale delay-1"><img src="https://images.unsplash.com/photo-1590005354167-6da97ce231ce?w=800&h=600&fit=crop&q=80" alt="Hamparan Sawah" loading="lazy"><div class="gallery-overlay"><span>Hamparan Sawah Kadubeureum</span></div></div>
-        <div class="gallery-item reveal-scale delay-2"><img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=400&h=300&fit=crop&q=80" alt="Lingkungan Hijau" loading="lazy"><div class="gallery-overlay"><span>Lingkungan Hijau Asri</span></div></div>
-        <div class="gallery-item reveal-scale delay-3"><img src="https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?w=400&h=300&fit=crop&q=80" alt="Jalan Pedesaan" loading="lazy"><div class="gallery-overlay"><span>Jalan Desa yang Teduh</span></div></div>
-        <div class="gallery-item reveal-scale delay-4"><img src="https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop&q=80" alt="Pertanian Lokal" loading="lazy"><div class="gallery-overlay"><span>Pertanian Lokal</span></div></div>
-        <div class="gallery-item reveal-scale delay-5"><img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop&q=80" alt="Sore di Desa" loading="lazy"><div class="gallery-overlay"><span>Senja di Pedesaan</span></div></div>
+        <div class="gallery-item reveal-scale delay-1"><img src="{{ asset('images/desa_sawah.png') }}" alt="Hamparan Sawah" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"><div class="gallery-overlay"><span>Hamparan Sawah Kadubeureum</span></div></div>
+        <div class="gallery-item reveal-scale delay-2"><img src="{{ asset('images/desa_jalan.png') }}" alt="Lingkungan Hijau" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"><div class="gallery-overlay"><span>Lingkungan Hijau Asri</span></div></div>
+        <div class="gallery-item reveal-scale delay-3"><img src="{{ asset('images/desa_kantor.png') }}" alt="Jalan Pedesaan" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"><div class="gallery-overlay"><span>Jalan Desa yang Teduh</span></div></div>
+        <div class="gallery-item reveal-scale delay-4"><img src="{{ asset('images/desa_sawah.png') }}" alt="Pertanian Lokal" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"><div class="gallery-overlay"><span>Pertanian Lokal</span></div></div>
+        <div class="gallery-item reveal-scale delay-5"><img src="{{ asset('images/desa_jalan.png') }}" alt="Sore di Desa" loading="lazy" style="object-fit: cover; width: 100%; height: 100%;"><div class="gallery-overlay"><span>Senja di Pedesaan</span></div></div>
     </div>
 </section>
 
@@ -546,5 +786,164 @@
     }
     document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', function(e) { const t = document.querySelector(this.getAttribute('href')); if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }); });
 </script>
+
+<!-- Float Chat -->
+<a href="#" class="float-chat" title="Layanan Bantuan">
+    <img src="{{ asset('logo_bantuan.png') }}" alt="Chat">
+</a>
+
+
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        <div class="chat-header-info">
+            <div class="chat-avatar">S</div>
+            <div>
+                <div class="chat-title">SIAPU Bot</div>
+                <div class="chat-status">Online</div>
+            </div>
+        </div>
+        <button class="chat-close" id="chatClose">
+            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <div class="chat-msg bot">Halo! Saya <b>SIAPU Bot</b>, asisten virtual Desa Kadubeureum. Ada yang bisa saya bantu terkait layanan desa hari ini?</div>
+        <div class="typing-indicator" id="typingIndicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    </div>
+    <form class="chat-footer" id="chatForm">
+        <input type="text" class="chat-input" id="chatInput" placeholder="Ketik pesan..." required autocomplete="off">
+        <button type="submit" class="chat-send" id="chatSend">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" style="margin-left: -2px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+        </button>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const floatChat = document.querySelector(".float-chat");
+    const chatWindow = document.getElementById("chatWindow");
+    const chatClose = document.getElementById("chatClose");
+    const chatForm = document.getElementById("chatForm");
+    const chatInput = document.getElementById("chatInput");
+    const chatBody = document.getElementById("chatBody");
+    const typingIndicator = document.getElementById("typingIndicator");
+    const chatSend = document.getElementById("chatSend");
+
+    if(floatChat && chatWindow) {
+        floatChat.addEventListener("click", (e) => {
+            e.preventDefault();
+            chatWindow.classList.toggle("active");
+            if(chatWindow.classList.contains("active")) {
+                setTimeout(() => chatInput.focus(), 300);
+            }
+        });
+
+        chatClose.addEventListener("click", () => {
+            chatWindow.classList.remove("active");
+        });
+
+        chatForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if(!message) return;
+
+            addMessage(message, "user");
+            chatInput.value = "";
+            chatSend.disabled = true;
+            
+            typingIndicator.classList.add("active");
+            chatBody.appendChild(typingIndicator);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            try {
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": document.querySelector("meta[name='csrf-token']").content
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                const data = await response.json();
+                
+                typingIndicator.classList.remove("active");
+                chatSend.disabled = false;
+                addMessage(data.reply, "bot");
+            } catch (error) {
+                typingIndicator.classList.remove("active");
+                chatSend.disabled = false;
+                addMessage("Maaf, terjadi kesalahan komunikasi dengan server.", "bot");
+            }
+        });
+
+        function addMessage(text, sender) {
+            const div = document.createElement("div");
+            div.className = "chat-msg " + sender;
+            div.innerHTML = text;
+            chatBody.insertBefore(div, typingIndicator);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    }
+});
+</script>
+<!-- Sienna Accessibility -->
+<script src="https://cdn.jsdelivr.net/npm/sienna-accessibility/dist/sienna-accessibility.umd.js" async></script>
+<!-- CUSTOM CURSOR -->
+<style>
+    body { cursor: none; }
+    .cursor-dot { width: 8px; height: 8px; background: #2563EB; border-radius: 50%; position: fixed; pointer-events: none; z-index: 999999; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s; }
+    .cursor-outline { width: 40px; height: 40px; border: 2px solid rgba(37,99,235,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 999998; transform: translate(-50%, -50%); transition: transform 0.15s ease-out, width 0.2s, height 0.2s, background 0.2s; }
+    body:hover .cursor-dot, body:hover .cursor-outline { opacity: 1; }
+    a:hover ~ .cursor-outline, button:hover ~ .cursor-outline, input:hover ~ .cursor-outline, select:hover ~ .cursor-outline, textarea:hover ~ .cursor-outline, .btn:hover ~ .cursor-outline { transform: translate(-50%, -50%) scale(1.5); background: rgba(37,99,235,0.1); border-color: transparent; }
+    a, button, input, select, textarea, .btn, .nav-link, .nav-brand { cursor: none !important; }
+    @media (max-width: 768px) { .cursor-dot, .cursor-outline { display: none !important; } body { cursor: auto; } a, button, input, select, textarea { cursor: pointer !important; } }
+</style>
+
+<div class="cursor-dot" id="cursorDotGlobal"></div>
+<div class="cursor-outline" id="cursorOutlineGlobal"></div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dot = document.getElementById('cursorDotGlobal');
+        const outline = document.getElementById('cursorOutlineGlobal');
+        
+        if (dot && outline) {
+            window.addEventListener('mousemove', function(e) {
+                dot.style.left = e.clientX + 'px';
+                dot.style.top = e.clientY + 'px';
+                setTimeout(() => {
+                    outline.style.left = e.clientX + 'px';
+                    outline.style.top = e.clientY + 'px';
+                }, 50);
+            });
+            
+            const attachEvents = () => {
+                document.querySelectorAll('a, button, input, select, textarea, .btn, .nav-link, .nav-brand').forEach(el => {
+                    if (!el.dataset.cursorAttached) {
+                        el.addEventListener('mouseenter', () => {
+                            outline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                            outline.style.background = 'rgba(37,99,235,0.1)';
+                            outline.style.borderColor = 'transparent';
+                        });
+                        el.addEventListener('mouseleave', () => {
+                            outline.style.transform = 'translate(-50%, -50%) scale(1)';
+                            outline.style.background = 'transparent';
+                            outline.style.borderColor = 'rgba(37,99,235,0.5)';
+                        });
+                        el.dataset.cursorAttached = 'true';
+                    }
+                });
+            };
+            
+            attachEvents();
+            // Optional: re-attach on DOM mutations if needed
+            const observer = new MutationObserver(attachEvents);
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    });
+</script>
+<!-- END CUSTOM CURSOR -->
 </body>
 </html>

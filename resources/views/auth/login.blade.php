@@ -38,13 +38,13 @@
 
         <div class="form-group">
             <label class="form-label" for="email">Alamat Email</label>
-            <input id="email" class="form-input" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" placeholder="admin@desa.go.id">
+            <input id="email" class="form-input" type="email" name="email" value="{{ old('email', 'admin@kadubeureum.com') }}" required autofocus autocomplete="username" placeholder="admin@desa.go.id">
             @error('email') <p class="form-error">{{ $message }}</p> @enderror
         </div>
 
         <div class="form-group">
             <label class="form-label" for="password">Password</label>
-            <input id="password" class="form-input" type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+            <input id="password" class="form-input" type="password" name="password" value="password" required autocomplete="current-password" placeholder="••••••••">
             @error('password') <p class="form-error">{{ $message }}</p> @enderror
         </div>
 

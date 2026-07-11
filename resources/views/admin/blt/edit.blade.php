@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Data Penerima BLT') }}
+            {{ __('Edit Data Penerima Bantuan') }}
         </h2>
     </x-slot>
 
@@ -32,13 +32,13 @@
                             </div>
 
                             <div>
-                                <x-input-label for="status_penerimaan" value="Status" />
-                                <select id="status_penerimaan" name="status_penerimaan" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
-                                    <option value="Layak" {{ old('status_penerimaan', $blt->status_penerimaan) == 'Layak' ? 'selected' : '' }}>Layak</option>
-                                    <option value="Tidak Layak" {{ old('status_penerimaan', $blt->status_penerimaan) == 'Tidak Layak' ? 'selected' : '' }}>Tidak Layak</option>
-                                    <option value="Diterima" {{ old('status_penerimaan', $blt->status_penerimaan) == 'Diterima' ? 'selected' : '' }}>Diterima</option>
+                                <x-input-label for="status_penerima" value="Status" />
+                                <select id="status_penerima" name="status_penerima" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                    <option value="Layak" {{ old('status_penerima', $blt->status_penerima) == 'Layak' ? 'selected' : '' }}>Layak</option>
+                                    <option value="Tidak Layak" {{ old('status_penerima', $blt->status_penerima) == 'Tidak Layak' ? 'selected' : '' }}>Tidak Layak</option>
+                                    <option value="Diterima" {{ old('status_penerima', $blt->status_penerima) == 'Diterima' ? 'selected' : '' }}>Diterima</option>
                                 </select>
-                                <x-input-error class="mt-2" :messages="$errors->get('status_penerimaan')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('status_penerima')" />
                             </div>
 
                         </div>

@@ -26,12 +26,12 @@ class BltController extends Controller
         $validated = $request->validate([
             'warga_id' => 'required|exists:wargas,id',
             'periode' => 'required|string|max:255',
-            'status_penerimaan' => 'required|in:Layak,Tidak Layak,Diterima',
+            'status_penerima' => 'required|in:Layak,Tidak Layak,Diterima',
         ]);
 
         Blt::create($validated);
 
-        return redirect()->route('admin.blt.index')->with('success', 'Data BLT berhasil ditambahkan.');
+        return redirect()->route('admin.blt.index')->with('success', 'Data Bantuan berhasil ditambahkan.');
     }
 
     public function edit(Blt $blt)
@@ -45,17 +45,17 @@ class BltController extends Controller
         $validated = $request->validate([
             'warga_id' => 'required|exists:wargas,id',
             'periode' => 'required|string|max:255',
-            'status_penerimaan' => 'required|in:Layak,Tidak Layak,Diterima',
+            'status_penerima' => 'required|in:Layak,Tidak Layak,Diterima',
         ]);
 
         $blt->update($validated);
 
-        return redirect()->route('admin.blt.index')->with('success', 'Data BLT berhasil diperbarui.');
+        return redirect()->route('admin.blt.index')->with('success', 'Data Bantuan berhasil diperbarui.');
     }
 
     public function destroy(Blt $blt)
     {
         $blt->delete();
-        return redirect()->route('admin.blt.index')->with('success', 'Data BLT berhasil dihapus.');
+        return redirect()->route('admin.blt.index')->with('success', 'Data Bantuan berhasil dihapus.');
     }
 }
