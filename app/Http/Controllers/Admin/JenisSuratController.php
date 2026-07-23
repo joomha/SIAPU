@@ -24,7 +24,12 @@ class JenisSuratController extends Controller
         $validated = $request->validate([
             'nama_surat' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
+            'persyaratan_dokumen' => 'nullable|array',
             'template_surat' => 'nullable|string',
+            'template_konten' => 'nullable|string',
+            'jenis_validasi' => 'required|in:langsung,tte_kades,basah',
+            'kode_surat' => 'nullable|string|max:50',
+            'format_nomor' => 'nullable|string|max:100',
         ]);
 
         JenisSurat::create($validated);
@@ -42,7 +47,12 @@ class JenisSuratController extends Controller
         $validated = $request->validate([
             'nama_surat' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
+            'persyaratan_dokumen' => 'nullable|array',
             'template_surat' => 'nullable|string',
+            'template_konten' => 'nullable|string',
+            'jenis_validasi' => 'required|in:langsung,tte_kades,basah',
+            'kode_surat' => 'nullable|string|max:50',
+            'format_nomor' => 'nullable|string|max:100',
         ]);
 
         $jenis_surat->update($validated);

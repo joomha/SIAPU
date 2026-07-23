@@ -1,11 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Data Warga</x-slot>
 
-    @if(session('success'))
-        <div class="alert-success">
-            <strong>Berhasil!</strong> {{ session('success') }}
-        </div>
-    @endif
+
 
     <div class="card">
         <div class="card-header">
@@ -22,6 +18,20 @@
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Tambah Warga
                 </a>
+                
+                <a href="{{ route('admin.warga.template') }}" class="btn btn-ghost" title="Download Template Excel">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    Template Excel
+                </a>
+                
+                <form action="{{ route('admin.warga.import') }}" method="POST" enctype="multipart/form-data" style="display:flex;gap:8px;" id="formImportWarga">
+                    @csrf
+                    <input type="file" name="file" id="fileImportWarga" accept=".xlsx, .xls" style="display:none;" onchange="document.getElementById('formImportWarga').submit();">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileImportWarga').click();">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                        Import Excel
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -51,7 +61,7 @@
                     <td>
                         <div style="display:flex;gap:6px;">
                             <a href="{{ route('admin.warga.edit', $w) }}" class="btn btn-ghost" style="padding:5px 12px;font-size:12px;">Edit</a>
-                            <form action="{{ route('admin.warga.destroy', $w) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus data warga ini?');">
+                            <form action="{{ route('admin.warga.destroy', $w) }}" method="POST" onsubmit="event.preventDefault(); desaConfirm('Yakin ingin menghapus data warga ini? Data yang sudah dihapus tidak dapat dikembalikan.', () => this.submit()); return false;">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-danger" style="padding:5px 12px;font-size:12px;">Hapus</button>
                             </form>

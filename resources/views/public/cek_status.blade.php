@@ -125,19 +125,7 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert-box alert-success">
-            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            {{ session('success') }}
-        </div>
-    @endif
 
-    @if(session('error'))
-        <div class="alert-box alert-error">
-            <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            {{ session('error') }}
-        </div>
-    @endif
 
     <div class="search-card">
         <form action="{{ route('public.cek_status') }}" method="GET" class="search-form">
@@ -210,5 +198,70 @@
             });
         });
     </script>
+
+    <!-- ═══ POPUP "NIAT" DESA KADUBEUREUM (Public Page) ═══ -->
+    <style>
+        .desa-popup-overlay { position: fixed; inset: 0; z-index: 99999; background: rgba(11, 31, 58, 0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease; }
+        .desa-popup-overlay.active { opacity: 1; visibility: visible; }
+        .desa-popup { background: #fff; border-radius: 20px; padding: 0; width: 420px; max-width: 92vw; box-shadow: 0 25px 60px rgba(0,0,0,0.25); transform: scale(0.85) translateY(20px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
+        .desa-popup-overlay.active .desa-popup { transform: scale(1) translateY(0); }
+        .desa-popup-header { display: flex; align-items: center; gap: 12px; padding: 20px 24px 16px; border-bottom: 1px solid #F1F5F9; }
+        .desa-popup-logo { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #3B82F6, #1D4ED8); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 16px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(59,130,246,0.35); }
+        .desa-popup-brand strong { display: block; font-size: 14px; font-weight: 700; color: #0B1F3A; }
+        .desa-popup-brand span { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .desa-popup-body { padding: 28px 24px; text-align: center; }
+        .desa-popup-icon { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; transform: scale(0); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.15s; }
+        .desa-popup-overlay.active .desa-popup-icon { transform: scale(1); }
+        .desa-popup-icon svg { width: 36px; height: 36px; }
+        .desa-popup-icon.error { background: #FEE2E2; } .desa-popup-icon.error svg { stroke: #DC2626; }
+        .desa-popup-icon.success { background: #DCFCE7; } .desa-popup-icon.success svg { stroke: #16A34A; }
+        .desa-popup-title { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #0F172A; margin-bottom: 8px; }
+        .desa-popup-message { font-size: 14px; color: #64748B; line-height: 1.6; }
+        .desa-popup-footer { padding: 0 24px 24px; display: flex; gap: 10px; justify-content: center; }
+        .desa-popup-btn { padding: 10px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; }
+        .desa-popup-btn.primary { background: #2563EB; color: #fff; } .desa-popup-btn.primary:hover { background: #1D4ED8; }
+        .desa-popup-btn.danger { background: #DC2626; color: #fff; } .desa-popup-btn.danger:hover { background: #B91C1C; }
+        .desa-popup-btn.success-btn { background: #16A34A; color: #fff; } .desa-popup-btn.success-btn:hover { background: #15803D; }
+    </style>
+    <div class="desa-popup-overlay" id="desaPopupOverlayCek">
+        <div class="desa-popup">
+            <div class="desa-popup-header"><div class="desa-popup-logo">K</div><div class="desa-popup-brand"><strong>SIAPU</strong><span>Desa Kadubeureum</span></div></div>
+            <div class="desa-popup-body">
+                <div class="desa-popup-icon" id="desaPopupIconCek"><svg id="desaPopupSvgCek" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></svg></div>
+                <div class="desa-popup-title" id="desaPopupTitleCek"></div>
+                <div class="desa-popup-message" id="desaPopupMsgCek"></div>
+            </div>
+            <div class="desa-popup-footer" id="desaPopupFooterCek"></div>
+        </div>
+    </div>
+    <script>
+    (function() {
+        const overlay = document.getElementById('desaPopupOverlayCek');
+        function showPopup(type, title, message) {
+            document.getElementById('desaPopupIconCek').className = 'desa-popup-icon ' + type;
+            document.getElementById('desaPopupSvgCek').innerHTML = type === 'success' ? '<path d="M5 13l4 4L19 7"/>' : '<path d="M6 18L18 6M6 6l12 12"/>';
+            document.getElementById('desaPopupTitleCek').textContent = title;
+            document.getElementById('desaPopupMsgCek').textContent = message;
+            const footer = document.getElementById('desaPopupFooterCek');
+            footer.innerHTML = '';
+            const btn = document.createElement('button');
+            btn.className = 'desa-popup-btn ' + (type === 'success' ? 'success-btn' : 'danger');
+            btn.textContent = 'Mengerti';
+            btn.addEventListener('click', () => overlay.classList.remove('active'));
+            footer.appendChild(btn);
+            overlay.classList.add('active');
+        }
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+
+        @if(session('success'))
+            showPopup('success', 'Berhasil!', @json(session('success')));
+        @endif
+        @if(session('error'))
+            showPopup('error', 'Data Tidak Ditemukan', @json(session('error')));
+        @endif
+    })();
+    </script>
+    <!-- ═══ END POPUP ═══ -->
+
 </body>
 </html>

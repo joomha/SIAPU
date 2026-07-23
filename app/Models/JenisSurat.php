@@ -8,6 +8,16 @@ class JenisSurat extends Model
 {
     protected $guarded = ['id'];
 
+
+
+    protected function casts(): array
+    {
+        return [
+            'form_isian' => 'array',
+            'persyaratan_dokumen' => 'array',
+        ];
+    }
+
     public function surats()
     {
         return $this->hasMany(Surat::class);

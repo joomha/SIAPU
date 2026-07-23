@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignId('warga_id')->constrained('wargas')->onDelete('cascade');
             $table->foreignId('jenis_surat_id')->constrained('jenis_surats')->onDelete('cascade');
             $table->date('tanggal_pengajuan');
-            $table->enum('status', ['Menunggu', 'Diproses', 'Selesai', 'Ditolak'])->default('Menunggu');
-            $table->text('catatan')->nullable();
+            $table->string('nomor_surat')->nullable();
+            $table->json('file_persyaratan')->nullable();
+            $table->enum('status', ['Menunggu', 'Diproses', 'Perlu Revisi', 'Menunggu Kades', 'Selesai', 'Ditolak'])->default('Menunggu');
+            $table->text('catatan_admin')->nullable();
             $table->timestamps();
         });
     }

@@ -1,11 +1,7 @@
 <x-app-layout>
     <x-slot name="header">Pengajuan Surat Warga</x-slot>
 
-    @if(session('success'))
-        <div class="alert-success">
-            <strong>Berhasil!</strong> {{ session('success') }}
-        </div>
-    @endif
+
 
     <div class="card">
         <div class="card-header">
@@ -46,7 +42,7 @@
                         <span class="badge {{ $statusClass }}">{{ $p->status }}</span>
                     </td>
                     <td>
-                        <a href="{{ route('admin.pengajuan-surat.edit', $p) }}" class="btn btn-primary" style="padding:5px 14px;font-size:12px;">
+                        <a href="{{ route('admin.pengajuan-surat.show', $p) }}" class="btn btn-primary" style="padding:5px 14px;font-size:12px;">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:13px;height:13px;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                             Proses
                         </a>

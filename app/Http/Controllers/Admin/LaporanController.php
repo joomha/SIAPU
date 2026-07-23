@@ -33,4 +33,36 @@ class LaporanController extends Controller
             'wargaPerempuan'
         ));
     }
+
+    public function exportExcel()
+    {
+        $pengajuans = PengajuanSurat::with(['warga', 'jenisSurat'])->latest()->get();
+
+        $data = [
+            ['ID', 'Tanggal', 'Pemohon', 'NIK', 'Jenis Surat', 'Status', 'Nomor Surat']
+        ];
+
+        foreach ($pengajuans as $p) {
+            $data[] = [
+                $p->id,
+                \Carbon\Carbon::parse($p->tanggal_pengajuan)->format('Y-m-d'),
+                $p->warga->nama,
+                "'" . $p->warga->nik, // Prefix with apostrophe for Excel to treat as string
+                $p->jenisSurat->nama_surat,
+                $p->status,
+                $p->nomor_surat ?? '-'
+            ];
+        }
+
+        $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($data);
+        $xlsx->downloadAs('laporan_pengajuan_surat.xlsx');
+        exit;
+    }
+
+    public function exportPdf()
+    {
+        $pengajuans = PengajuanSurat::with(['warga', 'jenisSurat'])->latest()->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan.pdf', compact('pengajuans'))->setPaper('a4', 'landscape');
+        return $pdf->stream('laporan_pengajuan_surat.pdf');
+    }
 }

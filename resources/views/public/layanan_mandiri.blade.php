@@ -125,7 +125,7 @@
             <h3 class="form-section-title">Informasi Surat</h3>
             <div class="form-group">
                 <label for="jenis_surat_id" class="form-label">Jenis Surat yang Diajukan <span>*</span></label>
-                <select id="jenis_surat_id" name="jenis_surat_id" class="form-control" required>
+                <select id="jenis_surat_id" name="jenis_surat_id" class="form-control" required onchange="fetchFormIsian()">
                     <option value="">-- Pilih Jenis Surat --</option>
                     @foreach($jenis_surats as $js)
                         <option value="{{ $js->id }}" {{ old('jenis_surat_id') == $js->id ? 'selected' : '' }}>{{ $js->nama_surat }}</option>
@@ -142,6 +142,10 @@
                 <div class="form-group">
                     <label for="nama" class="form-label">Nama Lengkap Sesuai KTP <span>*</span></label>
                     <input type="text" id="nama" name="nama" value="{{ old('nama') }}" required placeholder="Contoh: Budi Santoso" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Alamat Email Aktif <span>*</span></label>
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" required placeholder="Contoh: budi@gmail.com" class="form-control">
                 </div>
                 <div class="form-group">
                     <label for="tempat_lahir" class="form-label">Tempat Lahir <span>*</span></label>
@@ -191,6 +195,11 @@
                 </div>
             </div>
 
+            <div id="dynamic-form-section" style="display: none; margin-top: 40px;">
+                <h3 class="form-section-title">Data Tambahan Surat</h3>
+                <div id="dynamic-form-container" class="grid-2"></div>
+            </div>
+
             <div style="margin-top: 40px;">
                 <button type="submit" class="btn-submit">
                     Kirim Pengajuan Surat
@@ -222,6 +231,162 @@
                 outline.style.borderColor = 'rgba(37,99,235,0.5)';
             });
         });
+
+        function fetchFormIsian() {
+            const id = document.getElementById('jenis_surat_id').value;
+            const section = document.getElementById('dynamic-form-section');
+            const container = document.getElementById('dynamic-form-container');
+            container.innerHTML = '';
+            
+            if (!id) {
+                section.style.display = 'none';
+                return;
+            }
+
+            fetch(`/layanan-mandiri/form-isian/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.form_isian && Array.isArray(data.form_isian)) {
+                        section.style.display = 'block';
+                        data.form_isian.forEach(field => {
+                            const group = document.createElement('div');
+                            group.className = 'form-group';
+                            if (field.type === 'textarea') {
+                                group.style.gridColumn = '1 / -1'; // make textarea full width
+                            }
+                            
+                            const label = document.createElement('label');
+                            label.className = 'form-label';
+                            label.innerHTML = field.label + (field.required ? ' <span>*</span>' : '');
+                            
+                            let input;
+                            if (field.type === 'textarea') {
+                                input = document.createElement('textarea');
+                                input.className = 'form-control';
+                                input.rows = 3;
+                            } else {
+                                input = document.createElement('input');
+                                input.type = field.type || 'text';
+                                input.className = 'form-control';
+                            }
+                            
+                            input.name = `data_isian[${field.name}]`;
+                            input.placeholder = `Masukkan ${field.label}...`;
+                            if (field.required) input.required = true;
+                            
+                            group.appendChild(label);
+                            group.appendChild(input);
+                            container.appendChild(group);
+                        });
+                        
+                        // Add hover effect listeners to new inputs
+                        container.querySelectorAll('input, textarea').forEach(el => {
+                            el.addEventListener('mouseenter', () => {
+                                outline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                                outline.style.background = 'rgba(37,99,235,0.1)';
+                                outline.style.borderColor = 'transparent';
+                            });
+                            el.addEventListener('mouseleave', () => {
+                                outline.style.transform = 'translate(-50%, -50%) scale(1)';
+                                outline.style.background = 'transparent';
+                                outline.style.borderColor = 'rgba(37,99,235,0.5)';
+                            });
+                        });
+                    } else {
+                        section.style.display = 'none';
+                    }
+                })
+                .catch(err => {
+                    console.error("Error fetching form_isian:", err);
+                    section.style.display = 'none';
+                });
+        }
     </script>
+
+    <!-- ═══ POPUP "NIAT" DESA KADUBEUREUM (Public Page) ═══ -->
+    <style>
+        .desa-popup-overlay { position: fixed; inset: 0; z-index: 99999; background: rgba(11, 31, 58, 0.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease; }
+        .desa-popup-overlay.active { opacity: 1; visibility: visible; }
+        .desa-popup { background: #fff; border-radius: 20px; padding: 0; width: 420px; max-width: 92vw; box-shadow: 0 25px 60px rgba(0,0,0,0.25); transform: scale(0.85) translateY(20px); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); overflow: hidden; }
+        .desa-popup-overlay.active .desa-popup { transform: scale(1) translateY(0); }
+        .desa-popup-header { display: flex; align-items: center; gap: 12px; padding: 20px 24px 16px; border-bottom: 1px solid #F1F5F9; }
+        .desa-popup-logo { width: 38px; height: 38px; border-radius: 10px; background: linear-gradient(135deg, #3B82F6, #1D4ED8); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 16px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(59,130,246,0.35); }
+        .desa-popup-brand strong { display: block; font-size: 14px; font-weight: 700; color: #0B1F3A; }
+        .desa-popup-brand span { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .desa-popup-body { padding: 28px 24px; text-align: center; }
+        .desa-popup-icon { width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; transform: scale(0); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.15s; }
+        .desa-popup-overlay.active .desa-popup-icon { transform: scale(1); }
+        .desa-popup-icon svg { width: 36px; height: 36px; }
+        .desa-popup-icon.warning { background: #FEF9C3; }
+        .desa-popup-icon.warning svg { stroke: #D97706; }
+        .desa-popup-icon.error { background: #FEE2E2; }
+        .desa-popup-icon.error svg { stroke: #DC2626; }
+        .desa-popup-icon.success { background: #DCFCE7; }
+        .desa-popup-icon.success svg { stroke: #16A34A; }
+        .desa-popup-title { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; color: #0F172A; margin-bottom: 8px; }
+        .desa-popup-message { font-size: 14px; color: #64748B; line-height: 1.6; }
+        .desa-popup-footer { padding: 0 24px 24px; display: flex; gap: 10px; justify-content: center; }
+        .desa-popup-btn { padding: 10px 28px; border-radius: 10px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s ease; font-family: 'Inter', sans-serif; }
+        .desa-popup-btn.primary { background: #2563EB; color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        .desa-popup-btn.primary:hover { background: #1D4ED8; transform: translateY(-1px); }
+        .desa-popup-btn.danger { background: #DC2626; color: #fff; }
+        .desa-popup-btn.danger:hover { background: #B91C1C; }
+        .desa-popup-btn.warning-btn { background: #D97706; color: #fff; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
+        .desa-popup-btn.warning-btn:hover { background: #B45309; transform: translateY(-1px); }
+    </style>
+
+    <div class="desa-popup-overlay" id="desaPopupOverlayPublic">
+        <div class="desa-popup">
+            <div class="desa-popup-header">
+                <div class="desa-popup-logo">K</div>
+                <div class="desa-popup-brand">
+                    <strong>SIAPU</strong>
+                    <span>Desa Kadubeureum</span>
+                </div>
+            </div>
+            <div class="desa-popup-body">
+                <div class="desa-popup-icon" id="desaPopupIconPub">
+                    <svg id="desaPopupSvgPub" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></svg>
+                </div>
+                <div class="desa-popup-title" id="desaPopupTitlePub"></div>
+                <div class="desa-popup-message" id="desaPopupMsgPub"></div>
+            </div>
+            <div class="desa-popup-footer" id="desaPopupFooterPub"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const overlay = document.getElementById('desaPopupOverlayPublic');
+            function showPopup(type, title, message) {
+                const icon = document.getElementById('desaPopupIconPub');
+                const svg = document.getElementById('desaPopupSvgPub');
+                document.getElementById('desaPopupTitlePub').textContent = title;
+                document.getElementById('desaPopupMsgPub').textContent = message;
+                icon.className = 'desa-popup-icon ' + type;
+                const paths = {
+                    warning: '<path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>',
+                    error: '<path d="M6 18L18 6M6 6l12 12"/>',
+                    success: '<path d="M5 13l4 4L19 7"/>'
+                };
+                svg.innerHTML = paths[type] || paths.error;
+                const footer = document.getElementById('desaPopupFooterPub');
+                footer.innerHTML = '';
+                const btn = document.createElement('button');
+                btn.className = 'desa-popup-btn ' + (type === 'warning' ? 'warning-btn' : (type === 'success' ? 'primary' : 'danger'));
+                btn.textContent = 'Mengerti';
+                btn.addEventListener('click', () => overlay.classList.remove('active'));
+                footer.appendChild(btn);
+                overlay.classList.add('active');
+            }
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('active'); });
+
+            @if(session('nik_error'))
+                showPopup('warning', 'Warga Tidak Terdaftar', @json(session('nik_error')));
+            @endif
+        })();
+    </script>
+    <!-- ═══ END POPUP ═══ -->
+
 </body>
 </html>

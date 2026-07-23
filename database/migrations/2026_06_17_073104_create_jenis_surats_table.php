@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('nama_surat');
             $table->text('deskripsi')->nullable();
             $table->string('template_surat')->nullable();
+            $table->enum('jenis_validasi', ['langsung', 'tte_kades', 'basah'])->default('langsung');
+            $table->string('kode_surat', 50)->nullable();
+            $table->string('format_nomor', 100)->nullable();
             $table->timestamps();
         });
     }

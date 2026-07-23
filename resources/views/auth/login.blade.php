@@ -37,9 +37,9 @@
         @csrf
 
         <div class="form-group">
-            <label class="form-label" for="email">Alamat Email</label>
-            <input id="email" class="form-input" type="email" name="email" value="{{ old('email', 'admin@kadubeureum.com') }}" required autofocus autocomplete="username" placeholder="admin@desa.go.id">
-            @error('email') <p class="form-error">{{ $message }}</p> @enderror
+            <label class="form-label" for="login">Alamat Email / NIK / Username</label>
+            <input id="login" class="form-input" type="text" name="login" value="{{ old('login', 'admin') }}" required autofocus autocomplete="username" placeholder="Masukkan Email, NIK, atau Username">
+            @error('login') <p class="form-error">{{ $message }}</p> @enderror
         </div>
 
         <div class="form-group">

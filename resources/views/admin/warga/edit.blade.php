@@ -22,6 +22,12 @@
                             </div>
 
                             <div>
+                                <x-input-label for="email" value="Email" />
+                                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $warga->email)" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                            </div>
+
+                            <div>
                                 <x-input-label for="nama" value="Nama Lengkap" />
                                 <x-text-input id="nama" name="nama" type="text" class="mt-1 block w-full" :value="old('nama', $warga->nama)" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('nama')" />

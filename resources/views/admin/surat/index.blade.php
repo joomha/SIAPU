@@ -10,11 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     
-                    @if(session('success'))
-                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                            <span class="block sm:inline">{{ session('success') }}</span>
-                        </div>
-                    @endif
+
 
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -51,7 +47,7 @@
                                         <a href="{{ route('admin.surat.download', $s) }}" class="text-green-600 hover:text-green-900 mr-3" target="_blank">Download PDF</a>
                                     @endif
 
-                                    <form action="{{ route('admin.surat.destroy', $s) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus?');">
+                                    <form action="{{ route('admin.surat.destroy', $s) }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); desaConfirm('Yakin ingin menghapus surat ini? Data yang sudah dihapus tidak dapat dikembalikan.', () => this.submit()); return false;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>

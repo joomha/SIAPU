@@ -8,6 +8,7 @@ class Warga extends Model
 {
     protected $guarded = ['id'];
 
+
     public function surats()
     {
         return $this->hasMany(Surat::class);
@@ -21,5 +22,10 @@ class Warga extends Model
     public function blts()
     {
         return $this->hasMany(Blt::class);
+    }
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
     }
 }

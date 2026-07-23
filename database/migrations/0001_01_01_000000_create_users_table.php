@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('username')->unique()->nullable();
+            $table->string('nik', 16)->unique()->nullable();
+            $table->foreignId('warga_id')->nullable()->constrained('wargas')->onDelete('cascade');
             $table->string('email')->unique();
-            $table->enum('role', ['admin', 'validator'])->default('admin');
+            $table->enum('role', ['admin', 'validator', 'warga'])->default('admin');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
