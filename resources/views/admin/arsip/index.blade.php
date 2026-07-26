@@ -59,13 +59,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $a->nomor_surat }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $a->warga->nama }} <br><span class="text-xs text-gray-500">{{ $a->warga->nik }}</span></td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    @if($a->is_file)
-                                        <a href="{{ Storage::url($a->lokasi_file) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 mr-3">Lihat PDF</a>
-                                    @else
-                                        <a href="{{ route('admin.pengajuan-surat.preview', $a->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 mr-3">Lihat PDF</a>
-                                    @endif
+                                    <a href="{{ route('admin.arsip.view_file', $a->id) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 mr-3">Lihat PDF</a>
+                                    
                                     @if(auth()->user()->role === 'admin')
-                                    <form action="{{ route('admin.arsip.destroy', $a->id) }}?type={{ $a->type }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); desaConfirm('Yakin ingin menghapus arsip ini? File tidak dapat dikembalikan.', () => this.submit()); return false;">
+                                    <form action="{{ route('admin.arsip.destroy', $a->id) }}" method="POST" class="inline-block" onsubmit="event.preventDefault(); desaConfirm('Yakin ingin menghapus arsip ini? File tidak dapat dikembalikan.', () => this.submit()); return false;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>

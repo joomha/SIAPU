@@ -17,88 +17,75 @@ class ArsipController extends Controller
         $tanggal_akhir = $request->tanggal_akhir;
         $jenis_surat_id = $request->jenis_surat_id;
 
-        // Query Surat
-        $qSurat = \App\Models\Surat::with(['warga', 'jenisSurat'])->where('status', 'Disetujui');
-        
-        // Query PengajuanSurat
-        $qPengajuan = \App\Models\PengajuanSurat::with(['warga', 'jenisSurat'])->where('status', 'Selesai');
+        $query = Arsip::with(['surat.warga', 'surat.jenisSurat', 'pengajuan_surat.warga', 'pengajuan_surat.jenisSurat']);
 
         if ($search) {
-            $qSurat->whereHas('warga', function($q) use ($search) {
+            $query->whereHas('surat.warga', function($q) use ($search) {
                 $q->where('nama', 'like', '%' . $search . '%')->orWhere('nik', 'like', '%' . $search . '%');
-            });
-            $qPengajuan->whereHas('warga', function($q) use ($search) {
+            })->orWhereHas('pengajuan_surat.warga', function($q) use ($search) {
                 $q->where('nama', 'like', '%' . $search . '%')->orWhere('nik', 'like', '%' . $search . '%');
             });
         }
 
         if ($tanggal_awal && $tanggal_akhir) {
-            $qSurat->whereBetween('updated_at', [$tanggal_awal . ' 00:00:00', $tanggal_akhir . ' 23:59:59']);
-            $qPengajuan->whereBetween('updated_at', [$tanggal_awal . ' 00:00:00', $tanggal_akhir . ' 23:59:59']);
+            $query->whereBetween('tanggal_arsip', [$tanggal_awal, $tanggal_akhir]);
         }
 
         if ($jenis_surat_id) {
-            $qSurat->where('jenis_surat_id', $jenis_surat_id);
-            $qPengajuan->where('jenis_surat_id', $jenis_surat_id);
+            $query->whereHas('surat', function($q) use ($jenis_surat_id) {
+                $q->where('jenis_surat_id', $jenis_surat_id);
+            })->orWhereHas('pengajuan_surat', function($q) use ($jenis_surat_id) {
+                $q->where('jenis_surat_id', $jenis_surat_id);
+            });
         }
 
-        $surats = $qSurat->get();
-        $pengajuans = $qPengajuan->get();
-
-        $allArsip = $surats->map(function($item) {
-            return (object)[
-                'id' => $item->id,
-                'type' => 'surat',
-                'tanggal_arsip' => $item->updated_at->format('Y-m-d'),
-                'nomor_surat' => $item->nomor_surat,
-                'warga' => $item->warga,
-                'jenisSurat' => $item->jenisSurat,
-                'lokasi_file' => $item->file_surat,
-                'is_file' => true,
-                'created_at' => $item->created_at,
-                'updated_at' => $item->updated_at
-            ];
-        })->concat($pengajuans->map(function($item) {
-            return (object)[
-                'id' => $item->id,
-                'type' => 'pengajuan',
-                'tanggal_arsip' => $item->updated_at->format('Y-m-d'),
-                'nomor_surat' => $item->nomor_surat,
-                'warga' => $item->warga,
-                'jenisSurat' => $item->jenisSurat,
-                'lokasi_file' => null,
-                'is_file' => false,
-                'created_at' => $item->created_at,
-                'updated_at' => $item->updated_at
-            ];
-        }))->sortByDesc('updated_at')->values();
-
-        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 10;
-        $currentItems = $allArsip->slice(($currentPage - 1) * $perPage, $perPage)->all();
-        $arsips = new \Illuminate\Pagination\LengthAwarePaginator($currentItems, $allArsip->count(), $perPage, $currentPage, [
-            'path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath(),
-            'query' => $request->query()
-        ]);
-
+        $arsips = $query->latest('tanggal_arsip')->paginate(10);
         $jenis_surats = JenisSurat::all();
         
         return view('admin.arsip.index', compact('arsips', 'jenis_surats'));
     }
 
-    public function destroy(Request $request, $id)
+    public function viewFile($id)
     {
-        if ($request->type === 'surat') {
-            $surat = \App\Models\Surat::findOrFail($id);
-            if ($surat->file_surat && Storage::disk('public')->exists($surat->file_surat)) {
-                Storage::disk('public')->delete($surat->file_surat);
-            }
-            $surat->delete();
-            // Delete associated arsip table record just in case it exists
-            \App\Models\Arsip::where('surat_id', $id)->delete();
-        } elseif ($request->type === 'pengajuan') {
-            \App\Models\PengajuanSurat::findOrFail($id)->delete();
+        $arsip = Arsip::findOrFail($id);
+        
+        if ($arsip->lokasi_file && Storage::disk('public')->exists($arsip->lokasi_file)) {
+            return response()->file(Storage::disk('public')->path($arsip->lokasi_file), [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="'.basename($arsip->lokasi_file).'"'
+            ]);
         }
-        return redirect()->route('admin.arsip.index')->with('success', 'Arsip digital berhasil dihapus.');
+
+        return abort(404, 'File tidak ditemukan.');
+    }
+
+    public function destroy($id)
+    {
+        $arsip = Arsip::findOrFail($id);
+        
+        if ($arsip->lokasi_file && Storage::disk('public')->exists($arsip->lokasi_file)) {
+            Storage::disk('public')->delete($arsip->lokasi_file);
+        }
+        
+        $suratId = $arsip->surat_id;
+        $pengajuanId = $arsip->pengajuan_surat_id;
+        
+        $arsip->delete();
+        
+        if ($suratId) {
+            $surat = \App\Models\Surat::find($suratId);
+            if ($surat) {
+                if ($surat->file_surat && Storage::disk('public')->exists($surat->file_surat)) {
+                    Storage::disk('public')->delete($surat->file_surat);
+                }
+                $surat->delete();
+            }
+        }
+        
+        if ($pengajuanId) {
+            \App\Models\PengajuanSurat::where('id', $pengajuanId)->delete();
+        }
+        
+        return redirect()->route('admin.arsip.index')->with('success', 'Arsip digital dan data terkait berhasil dihapus.');
     }
 }

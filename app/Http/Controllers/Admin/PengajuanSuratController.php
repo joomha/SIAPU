@@ -13,9 +13,15 @@ use App\Mail\StatusPengajuanMail;
 
 class PengajuanSuratController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pengajuans = PengajuanSurat::with(['warga', 'jenisSurat'])->latest()->paginate(10);
+        $query = PengajuanSurat::with(['warga', 'jenisSurat']);
+        
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        
+        $pengajuans = $query->latest()->paginate(10);
         return view('admin.pengajuan_surat.index', compact('pengajuans'));
     }
 
@@ -96,6 +102,23 @@ class PengajuanSuratController extends Controller
 
         $pengajuan_surat->update($validated);
         
+        if ($validated['status'] === 'Selesai') {
+            $pdfContent = $pengajuan_surat->generatePdf();
+            if ($pdfContent) {
+                $fileName = 'pengajuan_' . \Illuminate\Support\Str::slug($pengajuan_surat->warga->nama) . '_' . time() . '.pdf';
+                $path = 'arsip/' . $fileName;
+                \Illuminate\Support\Facades\Storage::disk('public')->put($path, $pdfContent);
+                
+                \App\Models\Arsip::updateOrCreate(
+                    ['pengajuan_surat_id' => $pengajuan_surat->id],
+                    [
+                        'lokasi_file' => $path,
+                        'tanggal_arsip' => today(),
+                    ]
+                );
+            }
+        }
+
         activity()
             ->performedOn($pengajuan_surat)
             ->causedBy(auth()->user())

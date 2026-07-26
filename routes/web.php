@@ -49,6 +49,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('pengajuan-surat', PengajuanSuratController::class);
     Route::get('pengajuan-surat/{id}/preview', [PengajuanSuratController::class, 'preview'])->name('pengajuan-surat.preview');
     Route::post('pengajuan-surat/{id}/validasi', [PengajuanSuratController::class, 'validasi'])->name('pengajuan-surat.validasi');
+    
+    Route::get('arsip/file/{id}', [ArsipController::class, 'viewFile'])->name('arsip.view_file');
     Route::resource('arsip', ArsipController::class);
     Route::resource('blt', BltController::class);
     

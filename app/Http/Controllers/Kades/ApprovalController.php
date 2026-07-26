@@ -86,6 +86,20 @@ class ApprovalController extends Controller
         }
         $pengajuan->save();
 
+        $pdfContent = $pengajuan->generatePdf();
+        if ($pdfContent) {
+            $fileName = 'pengajuan_' . \Illuminate\Support\Str::slug($pengajuan->warga->nama) . '_' . time() . '.pdf';
+            $path = 'arsip/' . $fileName;
+            \Illuminate\Support\Facades\Storage::disk('public')->put($path, $pdfContent);
+            
+            \App\Models\Arsip::updateOrCreate(
+                ['pengajuan_surat_id' => $pengajuan->id],
+                [
+                    'lokasi_file' => $path,
+                    'tanggal_arsip' => today(),
+                ]
+            );
+        }
         $logMessage = 'Kades menyetujui pengajuan surat';
         $flashMessage = 'Surat berhasil disetujui dan notifikasi dikirim.';
         

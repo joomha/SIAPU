@@ -7,7 +7,17 @@
         <div class="card-header">
             <h3>Daftar Permohonan Masuk</h3>
             <div style="display:flex;gap:8px;align-items:center;">
-                <span class="badge badge-yellow">Menunggu: perlu dicek dari controller</span>
+                <form action="{{ route('admin.pengajuan-surat.index') }}" method="GET" style="display:flex; gap:8px;">
+                    <select name="status" class="form-control" style="font-size: 13px; padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc; height: auto;" onchange="this.form.submit()">
+                        <option value="">Semua Status</option>
+                        <option value="Menunggu" {{ request('status') == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="Diproses" {{ request('status') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                        <option value="Perlu Revisi" {{ request('status') == 'Perlu Revisi' ? 'selected' : '' }}>Dikembalikan (Perlu Revisi)</option>
+                        <option value="Menunggu Kades" {{ request('status') == 'Menunggu Kades' ? 'selected' : '' }}>Menunggu Kades</option>
+                        <option value="Selesai" {{ request('status') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+                        <option value="Ditolak" {{ request('status') == 'Ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </form>
             </div>
         </div>
 
